@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Waste Segregation Identifier</title>
+  <!-- Google Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 2px; padding: 0px; box-sizing: border-box; font-family: "Quicksand", sans-serif; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: linear-gradient(135deg, #e0f7fa, #ffffff);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* Header with logo + navbar */
+    header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 40px;
+      z-index: 1000;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 700;
+      font-size: 18px;
+      color: #006064;
+      transition: transform 0.3s ease;
+    }
+
+    .logo:hover { transform: scale(1.05); }
+    .logo img { width: 40px; height: 40px; }
+
+    /* Navbar */
+    nav {
+      display: flex;
+      gap: 20px;
+    }
+
+    nav a {
+      text-decoration: none;
+      color: #006064;
+      font-weight: 600;
+      font-size: 18px;
+      padding: 8px 16px;
+      border-radius: 8px;
+      transition: all 0.3s;
+    }
+
+    nav a:hover { 
+      color: #00acc1; 
+      background: rgba(0, 188, 212, 0.1);
+      transform: translateY(-2px);
+    }
+
+    /* Main Card */
+    #home {
+      padding-top: 120px; /* offset for fixed header */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    .card {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      width: 90%;
+      max-width: 400px;
+      min-height: 500px;
+      border-radius: 25px;
+      box-shadow: 0px 15px 35px rgba(6, 21, 24, 0.1);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 20px;
+      padding: 40px 30px;
+      text-align: center;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+      margin-bottom: 165px;
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #00acc1, #4dd0e1, #80deea);
+      border-radius: 25px 25px 0 0;
+    }
+
+    .card:hover { transform: translateY(-8px); }
+
+    .card h2 {
+      color: #004d40;
+      font-size: 24px;
+      font-weight: 700;
+      margin-bottom: 10px;
+      background: linear-gradient(45deg, #004d40, #00695c);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .subtitle {
+      color: #00796b;
+      font-size: 14px;
+      margin-bottom: 10px;
+      opacity: 0.8;
+    }
+
+    .btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      background: linear-gradient(45deg, #00acc1, #4dd0e1);
+      color: white;
+      padding: 14px 24px;
+      width: 85%;
+      border-radius: 50px;
+      border: none;
+      cursor: pointer;
+      font-size: 18px;
+      font-weight: 700;
+      transition: all 0.3s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+      transition: left 0.5s;
+    }
+
+    .btn:hover::before { left: 100%; }
+    .btn:hover { background: linear-gradient(45deg, #4dd0e1, #80deea); transform: scale(1.05); box-shadow: 0 8px 20px rgba(77, 208, 225, 0.3); }
+    .btn:active { transform: scale(0.98); }
+    .btn img { width: 1.9em; height: 2.0em; object-fit: contain; }
+
+    .btn.upload { background: linear-gradient(45deg, #4caf50, #81c784); }
+    .btn.upload:hover { background: linear-gradient(45deg, #66bb6a, #a5d6a7); box-shadow: 0 8px 20px rgba(102, 187, 106, 0.3); }
+
+    /* Icon preview (recycle) */
+    .icon-preview {
+      width: 150px;
+      height: 150px;
+      background: linear-gradient(135deg, #e0f7fa, #f0f9ff);
+      border-radius: 25px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      box-shadow: inset 0px 4px 15px rgba(0,0,0,0.08);
+      transition: transform 0.3s ease;
+      position: relative;
+    }
+
+    .icon-preview:hover { transform: rotate(10deg) scale(1.05); }
+    .icon-preview img { width: 125px; height: 125px; transition: transform 0.3s ease; }
+    .icon-preview:hover img { transform: rotate(-5deg); }
+
+    .file-input { position: absolute; opacity: 0; width: 100%; height: 100%; cursor: pointer; }
+
+    .image-preview { width: 100%; max-width: 300px; min-height: 200px; border: 2px dashed #00acc1; border-radius: 15px; display: none; justify-content: center; align-items: center; margin: 10px 0; position: relative; overflow: hidden; }
+    .image-preview img { max-width: 100%; max-height: 200px; border-radius: 10px; }
+    .image-preview.active { display: flex; }
+
+    /* Result display */
+    .result { width: 100%; padding: 20px; background: linear-gradient(135deg, #e8f5e8, #f1f8e9); border-radius: 15px; border-left: 4px solid #4caf50; display: none; margin-top: 15px; animation: slideIn 0.5s ease; }
+    .result.show { display: block; }
+
+    .cards { display: flex; flex-direction: column; gap: 15px; margin-top: 15px; }
+    .card-item { background: white; padding: 15px; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); text-align: left; }
+    .card-item h4 { margin-bottom: 8px; font-size: 16px; color: #00796b; }
+    .card-item p { margin: 0; font-size: 14px; color: #333; }
+
+    @keyframes slideIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* Loading animation */
+    .loading { display: none; flex-direction: column; align-items: center; gap: 15px; margin: 20px 0; }
+    .loading.show { display: flex; }
+    .spinner { width: 40px; height: 40px; border: 4px solid #e0f7fa; border-top: 4px solid #00acc1; border-radius: 50%; animation: spin 1s linear infinite; }
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+    /* Features Section */
+    #features {
+      padding: 120px 100px;
+      background: linear-gradient(135deg, #e0f7fa, #ffffff);
+      text-align: center;
+      min-height: 100vh;
+    }
+
+    #features h2 {
+      font-size: 28px;
+      color: #004d40;
+      margin-bottom: 30px;
+      font-weight: 700;
+      background: linear-gradient(45deg, #004d40, #00695c);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .feature-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 25px; max-width: 1000px; margin: 0 auto; }
+    .feature-item { background: white; padding: 25px 20px; border-radius: 15px; box-shadow: 0px 6px 18px rgb(89, 163, 182); transition: transform 0.3s ease, box-shadow 0.3s ease; }
+    .feature-item:hover { transform: translateY(-6px); box-shadow: 0px 10px 22px rgba(0, 0, 0, 0.12); }
+    .feature-item h3 { font-size: 20px; color: #00796b; margin-bottom: 12px; font-weight: 600; }
+    .feature-item p { font-size: 15px; color: #555; line-height: 1.6; }
+    .feature1img { width: 2.2em; height: 2.2em; object-fit: contain; margin-bottom: -12px; }
+
+    /* How it Works */
+    #how {
+      padding: 120px 80px;
+      background: #f9f9f9;
+      text-align: center;
+      min-height: 100vh;
+    }
+    #how h2 { font-size: 28px; color: #004d40; margin-bottom: 20px; }
+
+    /* Contact */
+    #contact {
+      padding: 120px 80px;
+      background: #eef7f7;
+      text-align: center;
+      min-height: 60vh;
+    }
+    #contact h2 { font-size: 28px; color: #004d40; margin-bottom: 20px; }
+
+    /* Responsive */
+    @media (max-width: 480px) {
+      header { padding: 12px 20px; }
+      nav a { font-size: 14px; padding: 6px 10px; }
+      .card { width: 95%; padding: 30px 20px; }
+      .card h2 { font-size: 20px; }
+      .btn { font-size: 14px; padding: 12px 20px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header>
+    <div class="logo">
+      <img src="recycle.png" alt="recycle icon">
+      Waste Segregation Identifier
+    </div>
+    <nav>
+      <a href="#home">🏠 Home</a>
+      <a href="#features">✨ Features</a>
+      <a href="#how">❓ How it Works</a>
+      <a href="#contact">📞 Contact</a>
+    </nav>
+  </header>
+
+  <!-- Home Section -->
+  <section id="home">
+    <div class="card">
+      <h2>Waste Segregation Identifier</h2>
+      <p class="subtitle">Upload or capture waste images for smart classification</p>
+
+      <div class="icon-preview" aria-hidden="true">
+        <img src="recycle.png" alt="recycle icon">
+      </div>
+
+      <div class="image-preview" id="imagePreview"></div>
+
+      <div class="loading" id="loading">
+        <div class="spinner"></div>
+        <p>Analyzing waste type...</p>
+      </div>
+
+      <div class="result" id="result"></div>
+
+      <button id="captureBtn" class="btn" onclick="captureImage()">
+        <img src="camera.png" alt="camera icon">
+        Capture Image
+      </button>
+
+      <button id="uploadBtn" class="btn upload" style="position: relative;">
+  <input type="file" id="fileInput" class="file-input" accept="image/*" onchange="handleFileUpload(event)">
+  <img src="upload.png" alt="upload icon">
+  Upload Image
+</button>
+
+
+      <!-- Analyze Button (initially hidden) -->
+      <button id="analyzeBtn" class="btn" style="display:none;" onclick="analyzeImage()">
+        🔍 Analyze
+      </button>
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  <section id="features">
+    <h2>✨ Features</h2>
+    <div class="feature-list">
+      <div class="feature-item">
+        <h3><img src="real-time.png" alt="Real-time waste icon" class="feature1img"> Real-time waste identification</h3>
+        <p>Users can capture or upload a photo of waste and get instant classification.
+ </p>
+      </div>
+      <div class="feature-item">
+        <h3><img src="multiple.png" alt="Multiple waste icon" class="feature1img"> Multiple waste categories</h3>
+        <p>Segregates waste into categories like Plastic, Paper, Metal, Glass, Organic, E-waste.
+</p>
+      </div>
+      <div class="feature-item">  
+        <h3><img src="dashboard.png" alt="Statistics icon" class="feature1img"> Statistics Dashboard</h3>
+        <p>
+Tracks the amount and types of waste identified by the user.
+.</p>
+      </div>
+      <div class="feature-item">
+        <h3><img src="educational tips.png" alt="educational icon" class="feature1img"> Educational tips</h3>
+        <p>Provides tips on how to properly dispose of each type of waste.
+</p>
+      </div>
+      <div class="feature-item">
+        <h3><img src="mobile.png" alt="mobile friendly icon" class="feature1img"> Mobile friendly camera capture</h3>
+        <p>
+Directly capture images from mobile devices for quick identification.</p>
+      </div>
+      <div class="feature-item">
+        <h3><img src="recycle.png" alt="Recycling icon" class="feature1img"> Recycling tips</h3>
+        <p>The feature educates users on sorting, reusing, and recycling waste to promote eco-friendly habits and reduce contamination..</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- How it Works -->
+  <section id="how">
+    <h2>❓ How it Works</h2>
+
+  <p>📸 <b>Capture Image</b>  Take a photo using your device camera.<br>
+  📂 <b>Upload Image</b>  Select an existing image from your device.</p>
+
+
+<p>After uploading or capturing the image, the system will analyze it and show you:</p>
+
+  
+<p>🏷 <b>Degradability</b>  Whether the waste is degradable or non-degradable.<br>
+  💧 <b>Waste Type</b>  Whether the waste is Dry or Wet.<br>
+  ♻ <b>Recycle Status</b>  Whether the waste can be recycled.<br>
+  📊 <b>Statistics</b>  View overall data on waste types, recyclability, and environmental impact.</p>
+
+<br>
+
+<h2>✨ Quick Tip</h2><br>
+<p>Always ensure the image is clear and focused for best results.</p>
+  </section>
+
+  <!-- Contact -->
+  <section id="contact">
+    <h2>📞 Contact</h2>
+    <p>For inquiries or support, reach us at <strong>waste-ai@example.com</strong>.</p>
+  </section>
+
+  <script>
+    function handleFileUpload(event) {
+      const file = event.target.files[0];
+      const preview = document.getElementById("imagePreview");
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          preview.innerHTML = `<img src="${e.target.result}" alt="Uploaded Image">`;
+          preview.classList.add("active");
+          document.getElementById("analyzeBtn").style.display = "block"; // show analyze button
+        }
+        reader.readAsDataURL(file);
+      }
+    }
+
+    function captureImage() {
+      alert("Camera capture functionality will be implemented here.");
+    }
+
+    function analyzeImage() {
+      const result = document.getElementById("result");
+      result.innerHTML = `
+        <div class="cards">
+          <div class="card-item">
+            <h4>🟢 Degradability</h4>
+            <p>This waste is biodegradable and can decompose naturally.</p>
+          </div>
+          <div class="card-item">
+            <h4>📦 Waste Type</h4>
+            <p>Organic waste - food scraps, garden waste.</p>
+          </div>
+          <div class="card-item">
+            <h4>♻️ Recycle Status</h4>
+            <p>Can be composted for soil enrichment.</p>
+          </div>
+          <div class="card-item">
+            <h4>📊 Statistics</h4>
+            <p>Recyclable waste accounts for 40% of urban waste streams, organic for 30%, and hazardous for 5%.</p>
+          </div>
+        </div>
+      `;
+      result.classList.add("show");
+
+      // Hide capture and upload buttons
+      document.getElementById("captureBtn").style.display = "none";
+      document.getElementById("uploadBtn").style.display = "none";
+    }
+  </script>
+</body>
+</html>
